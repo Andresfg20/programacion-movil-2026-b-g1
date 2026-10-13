@@ -44,4 +44,4 @@ Instalación de herramientas de desarrollo móvil (Node.js e Ionic CLI), creaci�
 
 A continuación se presenta la captura de pantalla de la aplicación ejecutándose en el navegador con el título modificado:
 
-![Captura de Ejecución](./captura.png)
+![Captura de Ejecución](./captura)
