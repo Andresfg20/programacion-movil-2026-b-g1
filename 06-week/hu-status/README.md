@@ -1,8 +1,8 @@
 # Actividad Semana 06: Monta tu entorno y crea tu primer proyecto
 
 ## Información del Estudiante
-- **Nombre Completo:** [Tu Nombre Completo]
-- **Usuario GitHub:** [Tu Usuario de GitHub]
+- **Nombre Completo:** Andres Felipe Gomez Anacona
+- **Usuario GitHub:** Andresfg20
 - **Asignatura:** Programación Móvil - 2026-B
 - **Semana:** Semana 06 (Corte 2)
 
