@@ -85,10 +85,24 @@
   }
 }
 
-/* Foco visible global (WCAG 2.4.7) */
-:where(ion-item, ion-button, button, a):focus-visible {
+/* Foco visible global (WCAG 2.4.7).
+   Los componentes de Ionic enfocan su elemento nativo dentro del shadow DOM,
+   por eso se usa ::part(native). */
+ion-item::part(native):focus-visible,
+ion-button::part(native):focus-visible {
   outline: 3px solid var(--cv-focus);
   outline-offset: 2px;
+}
+:where(button, a, [tabindex]):focus-visible {
+  outline: 3px solid var(--cv-focus);
+  outline-offset: 2px;
+}
+
+/* <h1> semántico dentro de IonTitle: hereda el estilo de la barra */
+.page-title {
+  margin: 0;
+  font: inherit;
+  color: inherit;
 }
 
 .sr-only {

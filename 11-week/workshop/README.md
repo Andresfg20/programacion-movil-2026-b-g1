@@ -1,13 +1,23 @@
 <!--
 CONFIG
-FRAMEWORK:    Ionic React 8 (Vite)
-LANGUAGE:     TypeScript
+STUDENT:      Andrés Felipe Gómez Anacona
+CODE:         9024125527
+DATE:         19/10/2026
+FRAMEWORK:    Ionic React 9 + React 19 (Vite 8)
+LANGUAGE:     TypeScript (strict)
 ENTITY:       Cultivos   (singular: Cultivo)
 WORKSHOP_DIR: 11-week/workshop/
-TESTING:      Vitest + React Testing Library (jsdom)
+APP_DIR:      11-week/workshop/app/
+TESTING:      Vitest 5 + React Testing Library (jsdom)
 -->
 
 # Semana 11 · UX/UI y patrones de interfaz avanzados — Cultivos
+
+| | |
+|---|---|
+| **Estudiante** | Andrés Felipe Gómez Anacona |
+| **Código** | 9024125527 |
+| **Fecha** | 19/10/2026 |
 
 Taller de la Semana 11 aplicado al módulo **Cultivos** de la app móvil (Ionic React + TypeScript).
 Cubre los checkpoints **CP0 a CP5**: auditoría UX, design tokens, estados de pantalla, accesibilidad/responsive y pruebas.
@@ -16,14 +26,14 @@ Cubre los checkpoints **CP0 a CP5**: auditoría UX, design tokens, estados de pa
 
 | Clave | Valor |
 |---|---|
-| Framework | Ionic React 8 + Vite |
-| Lenguaje | TypeScript (strict) |
+| Framework | Ionic React 9 + React 19 |
+| Bundler | Vite 8 |
+| Lenguaje | TypeScript (`strict: true`) |
 | Entidad principal | Cultivos (`Cultivo`) |
 | Carpeta del taller | `11-week/workshop/` |
-| Pruebas | Vitest + @testing-library/react |
-| Viewports objetivo | 360 px (móvil) y 768 px (tablet) |
-
-> Para cambiar de entidad: renombrar `Cultivo*` en `src/` y ajustar los textos de `CultivosList.tsx`.
+| Carpeta de la app | `11-week/workshop/app/` |
+| Pruebas | Vitest 5 + @testing-library/react (27 pruebas) |
+| Viewports objetivo | 360 px (1 columna) y 768 px (2 columnas) |
 
 ## Estructura
 
@@ -31,98 +41,91 @@ Cubre los checkpoints **CP0 a CP5**: auditoría UX, design tokens, estados de pa
 11-week/workshop/
 ├── README.md
 ├── GIT-COMMANDS.md
-├── vitest.config.ts
 ├── docs/
 │   ├── 01-ux-audit.md
 │   ├── 02-design-tokens.md
 │   ├── 03-states.md
-│   └── 04-a11y-responsive.md
-└── src/
-    ├── setupTests.ts
-    ├── theme/tokens.css
-    ├── types/cultivo.ts
-    ├── services/cultivosService.ts
-    ├── hooks/useCultivos.ts
-    ├── pages/CultivosPage.tsx
-    └── components/
-        ├── CultivosList.tsx
-        ├── CultivosList.css
-        └── __tests__/States.test.tsx
+│   ├── 04-a11y-responsive.md
+│   └── Screenshots/
+│       └── 03-states-tests.png
+└── app/
+    ├── index.html
+    ├── package.json
+    ├── tsconfig.json
+    ├── vite.config.ts
+    ├── vitest.config.ts
+    └── src/
+        ├── main.tsx
+        ├── App.tsx
+        ├── setupTests.ts
+        ├── theme/
+        │   └── tokens.css
+        ├── types/
+        │   └── cultivo.ts
+        ├── services/
+        │   └── cultivosService.ts
+        ├── hooks/
+        │   ├── useCultivos.ts
+        │   └── __tests__/
+        │       └── useCultivos.test.tsx
+        ├── pages/
+        │   └── CultivosPage.tsx
+        └── components/
+            ├── CultivosList.tsx
+            ├── CultivosList.css
+            └── __tests__/
+                └── States.test.tsx
 ```
 
 ## Setup
 
 ```bash
-# 1. Crear la app (si aún no existe) dentro de 11-week/workshop/
-npm i -g @ionic/cli
-ionic start workshop blank --type=react --capacitor
-cd workshop   # o mover el contenido a 11-week/workshop/
-
-# 2. Dependencias de pruebas y tipografía
-npm i -D vitest jsdom @vitejs/plugin-react @testing-library/react @testing-library/jest-dom @testing-library/dom
-npm i @fontsource-variable/bricolage-grotesque @fontsource-variable/source-sans-3
-
-# 3. Copiar los archivos de este taller sobre el proyecto
+cd 11-week/workshop/app
+npm install
+npm run dev        # servidor de desarrollo
 ```
 
-En `src/main.tsx` importar tokens y fuentes **después** de los CSS de Ionic:
-
-```tsx
-import '@ionic/react/css/core.css';
-/* ...resto de CSS de Ionic... */
-import '@fontsource-variable/bricolage-grotesque';
-import '@fontsource-variable/source-sans-3';
-import './theme/tokens.css';
-```
-
-En `src/App.tsx`, registrar la ruta:
-
-```tsx
-import CultivosPage from './pages/CultivosPage';
-// ...
-<Route exact path="/cultivos"><CultivosPage /></Route>
-<Route exact path="/"><Redirect to="/cultivos" /></Route>
-```
-
-Si TypeScript no reconoce `import './X.css'`, asegurar que existe `src/vite-env.d.ts` con `/// <reference types="vite/client" />` (la plantilla de Ionic ya lo incluye).
+`main.tsx` importa los estilos en este orden (el orden importa): CSS base de Ionic → fuentes → `theme/tokens.css`, de modo que los tokens `--cv-*` sobrescriben las variables `--ion-*`.
 
 ## Scripts
-
-```json
-{
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest"
-  }
-}
-```
 
 | Comando | Acción |
 |---|---|
 | `npm run dev` | Servidor de desarrollo |
+| `npm run build` | `tsc` (strict) + build de producción |
+| `npm run preview` | Sirve el build (usar para Lighthouse) |
+| `npm run typecheck` | Solo verificación de tipos |
 | `npm test` | Pruebas unitarias (Vitest) |
-| `npm run build && npm run preview` | Build para auditar con Lighthouse |
+| `npm run test:watch` | Pruebas en modo observación |
 
 ## Probar los estados manualmente
 
 - **Carga**: recargar la página; el skeleton dura ~1,2 s (`cultivosService.ts`).
-- **Error**: en consola del navegador o en el servicio, llamar `setSimulatedFailure(true)` y pulsar **Reintentar**.
+- **Error**: con `npm run dev`, en la consola del navegador ejecutar `window.cultivosDebug.setSimulatedFailure(true)` y pulsar **Reintentar** (o desplazar para refrescar). Volver a `false` para recuperar.
 - **Vacío**: devolver `[]` desde `fetchCultivos()`.
-- **Pull-to-refresh**: emular un dispositivo táctil en DevTools y arrastrar la lista hacia abajo.
+- **Pull-to-refresh**: emular un dispositivo táctil en DevTools y arrastrar la lista hacia abajo. Si falla con datos visibles, aparece un `IonToast` y la lista se conserva.
+
+`window.cultivosDebug` solo existe en desarrollo (`import.meta.env.DEV`).
+
+## Pruebas
+
+| Archivo | Pruebas | Cubre |
+|---|---|---|
+| `src/components/__tests__/States.test.tsx` | 12 | Estados carga/datos/vacío/error, conmutación, pull-to-refresh |
+| `src/hooks/__tests__/useCultivos.test.tsx` | 15 | Estados del hook, guardia `inFlight`, `refreshError`, desmontaje y StrictMode |
+
+> `IonRefresher` se mockea en `States.test.tsx` porque, en jsdom, el wrapper de Ionic 9 no aplica `disabled` ni registra `onIonRefresh` de forma observable. Se valida el contrato propio del componente (deshabilitado al cargar y `complete()` siempre invocado).
 
 ## Checkpoints
 
 | CP | Entregable | Archivos |
 |---|---|---|
-| CP0 | Setup y configuración | `README.md`, `vitest.config.ts`, `src/setupTests.ts` |
+| CP0 | Setup y configuración | `README.md`, `app/package.json`, `app/tsconfig.json`, `app/vite.config.ts`, `app/vitest.config.ts`, `app/index.html`, `app/src/main.tsx`, `app/src/App.tsx`, `app/src/setupTests.ts` |
 | CP1 | Auditoría UX | `docs/01-ux-audit.md` |
-| CP2 | Design tokens y contraste | `docs/02-design-tokens.md`, `src/theme/tokens.css` |
-| CP3 | Estados de pantalla + Pull-to-Refresh | `docs/03-states.md`, `src/components/CultivosList.*`, `src/hooks`, `src/pages`, `src/services`, `src/types` |
+| CP2 | Design tokens y contraste | `docs/02-design-tokens.md`, `app/src/theme/tokens.css` |
+| CP3 | Estados de pantalla + Pull-to-Refresh | `docs/03-states.md`, `app/src/components/CultivosList.*`, `app/src/hooks/useCultivos.ts`, `app/src/pages/`, `app/src/services/`, `app/src/types/` |
 | CP4 | Accesibilidad y responsive | `docs/04-a11y-responsive.md` |
-| CP5 | Pruebas y cierre | `src/components/__tests__/States.test.tsx`, `GIT-COMMANDS.md` |
+| CP5 | Pruebas y cierre | `app/src/**/__tests__/*.test.tsx`, `GIT-COMMANDS.md` |
 
 ## Documentación
 

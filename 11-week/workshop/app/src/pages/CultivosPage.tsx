@@ -3,7 +3,12 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToast, IonToolbar } from '
 import CultivosList from '../components/CultivosList';
 import { useCultivos } from '../hooks/useCultivos';
 
-const CultivosPage: React.FC = () => {
+interface CultivosPageProps {
+  /** Si se omite, el estado vacío no muestra el botón «Registrar cultivo». */
+  onCreate?: () => void;
+}
+
+const CultivosPage: React.FC<CultivosPageProps> = ({ onCreate }) => {
   const { status, items, errorMessage, refreshError, retry, refresh, dismissRefreshError } =
     useCultivos();
 
@@ -11,7 +16,9 @@ const CultivosPage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Mis cultivos</IonTitle>
+          <IonTitle>
+            <h1 className="page-title">Mis cultivos</h1>
+          </IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -22,7 +29,7 @@ const CultivosPage: React.FC = () => {
           errorMessage={errorMessage}
           onRetry={retry}
           onRefresh={refresh}
-          onCreate={() => console.info('Navegar a "Registrar cultivo" (siguiente fase)')}
+          onCreate={onCreate}
         />
       </IonContent>
 

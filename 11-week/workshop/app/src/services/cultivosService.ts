@@ -8,6 +8,13 @@ const MOCK_CULTIVOS: Cultivo[] = [
   { id: 'c-005', nombre: 'Frijol cargamanto', variedad: 'Cargamanto rojo', lote: '3', hectareas: 0.5, estado: 'atencion', fechaSiembra: '2025-09-14' },
 ];
 
+declare global {
+  interface Window {
+    /** Solo en desarrollo: permite forzar el estado de error desde la consola del navegador. */
+    cultivosDebug?: { setSimulatedFailure: (value: boolean) => void };
+  }
+}
+
 let simulateFailure = false;
 
 /** Utilidad de demo: fuerza que la siguiente carga falle (útil para probar el estado de error). */
@@ -22,4 +29,9 @@ export async function fetchCultivos(): Promise<Cultivo[]> {
     throw new Error('No pudimos conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.');
   }
   return MOCK_CULTIVOS;
+}
+
+// Disponible solo con `npm run dev`; se elimina del build de producción.
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  window.cultivosDebug = { setSimulatedFailure };
 }

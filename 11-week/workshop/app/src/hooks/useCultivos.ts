@@ -23,6 +23,16 @@ export function useCultivos(): UseCultivosResult {
 
   const inFlight = useRef(false);
   const itemsRef = useRef<Cultivo[]>([]);
+  const isMounted = useRef(true);
+
+  // Debe declararse ANTES del efecto de carga. Se vuelve a poner en true al montar
+  // para sobrevivir al ciclo mount → unmount → mount de React.StrictMode.
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const load = useCallback(async (mode: LoadMode) => {
     if (inFlight.current) return; // evita peticiones duplicadas (doble toque, StrictMode)
@@ -31,12 +41,14 @@ export function useCultivos(): UseCultivosResult {
 
     try {
       const data = await fetchCultivos();
+      if (!isMounted.current) return; // el componente se desmontó mientras esperaba
       itemsRef.current = data;
       setItems(data);
       setErrorMessage(undefined);
       setRefreshError(undefined);
       setStatus('success');
     } catch (error) {
+      if (!isMounted.current) return;
       const message = error instanceof Error ? error.message : 'No pudimos cargar tus cultivos.';
       if (mode === 'silent' && itemsRef.current.length > 0) {
         setRefreshError(message); // conserva los datos visibles
@@ -45,7 +57,7 @@ export function useCultivos(): UseCultivosResult {
         setStatus('error');
       }
     } finally {
-      inFlight.current = false;
+      inFlight.current = false; // siempre se libera, incluso tras desmontar
     }
   }, []);
 

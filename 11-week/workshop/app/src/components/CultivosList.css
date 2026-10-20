@@ -1,194 +1,133 @@
-import React from 'react';
-import {
-  IonList,
-  IonItem,
-  IonLabel,
-  IonBadge,
-  IonIcon,
-  IonSkeletonText,
-  IonButton,
-  IonRefresher,
-  IonRefresherContent,
-} from '@ionic/react';
-import {
-  checkmarkCircleOutline,
-  warningOutline,
-  nutritionOutline,
-  refreshOutline,
-  addCircleOutline,
-} from 'ionicons/icons';
-import { Cultivo, EstadoSalud } from '../types/cultivo';
-import './CultivosList.css';
-
-export interface CultivosListProps {
-  status: 'loading' | 'success' | 'error';
-  data?: Cultivo[];
-  items?: Cultivo[];
-  errorMessage?: string;
-  onRefresh?: () => Promise<void> | void;
-  onRetry?: () => void;
-  onSelect?: (cultivo: Cultivo) => void;
-  onCreate?: () => void;
+.cultivos-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--cv-space-4);
 }
 
-const getBadgeConfig = (estado: EstadoSalud) => {
-  switch (estado) {
-    case 'sano':
-      return { class: 'estado-badge--sano', label: 'Sano', icon: checkmarkCircleOutline };
-    case 'atencion':
-      return { class: 'estado-badge--atencion', label: 'Requiere atención', icon: warningOutline };
-    case 'cosecha':
-      return { class: 'estado-badge--cosecha', label: 'Listo para cosechar', icon: nutritionOutline };
+/* ---------- Lista (1 columna en 360px, 2 columnas desde 768px) ---------- */
+.cultivos-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--cv-space-3);
+  padding: 0;
+  background: transparent;
+}
+
+.cultivos-list ion-item {
+  --min-height: 64px;
+  --padding-start: var(--cv-space-4);
+  --inner-padding-end: var(--cv-space-3);
+  --border-radius: var(--cv-radius-md);
+  border-radius: var(--cv-radius-md);
+  border: 1px solid var(--cv-divider);
+  overflow: hidden;
+}
+
+.cultivos-list h2 {
+  font-family: var(--cv-font-display);
+  font-size: var(--cv-fs-md);
+  font-weight: 650;
+  line-height: var(--cv-lh-tight);
+  color: var(--cv-ink);
+  margin: var(--cv-space-2) 0 var(--cv-space-1);
+}
+
+.cultivos-list p {
+  font-size: var(--cv-fs-sm);
+  line-height: var(--cv-lh-body);
+  color: var(--cv-ink-muted);
+  margin: 0 0 var(--cv-space-1);
+}
+
+.cultivo-meta {
+  padding-bottom: var(--cv-space-2);
+}
+
+@media (min-width: 768px) {
+  .cultivos-container {
+    padding: var(--cv-space-5);
   }
-};
+  .cultivos-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--cv-space-4);
+  }
+}
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('es-CO', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
-};
+/* ---------- Badges de estado (texto + icono, nunca solo color) ---------- */
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cv-space-1);
+  min-height: 28px;
+  padding: var(--cv-space-1) var(--cv-space-3);
+  border-radius: var(--cv-radius-pill);
+  font-size: var(--cv-fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.estado-badge--sano { background: var(--cv-estado-sano-bg); color: var(--cv-estado-sano-fg); }
+.estado-badge--atencion { background: var(--cv-estado-atencion-bg); color: var(--cv-estado-atencion-fg); }
+.estado-badge--cosecha { background: var(--cv-estado-cosecha-bg); color: var(--cv-estado-cosecha-fg); }
 
-export const CultivosList: React.FC<CultivosListProps> = ({
-  status,
-  data,
-  items: itemsProp,
-  errorMessage,
-  onRefresh,
-  onRetry,
-  onSelect,
-  onCreate,
-}) => {
-  const listItems = data ?? itemsProp ?? [];
+/* ---------- Skeleton ---------- */
+.skeleton-title { width: 55%; height: 1.1rem; margin: var(--cv-space-3) 0 var(--cv-space-2); border-radius: var(--cv-radius-sm); }
+.skeleton-line { width: 80%; height: 0.8rem; margin: 0 0 var(--cv-space-2); border-radius: var(--cv-radius-sm); }
+.skeleton-line--short { width: 40%; margin-bottom: var(--cv-space-3); }
+.skeleton-badge { width: 72px; height: 28px; border-radius: var(--cv-radius-pill); }
 
-  const handleRefresh = async (event: CustomEvent) => {
-    if (onRefresh) {
-      try {
-        await onRefresh();
-      } catch (e) {
-        // Ignorar error para permitir la finalización del refresher
-      }
-    }
-    event.detail.complete();
-  };
+/* ---------- Estado vacío / error ---------- */
+.state-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--cv-space-3);
+  max-width: 420px;
+  margin: var(--cv-space-7) auto;
+  padding: 0 var(--cv-space-4);
+}
+.state-panel__icon { font-size: 56px; color: var(--cv-primary); }
+.state-panel--error .state-panel__icon { color: var(--cv-danger); }
+.state-panel__title {
+  font-family: var(--cv-font-display);
+  font-size: var(--cv-fs-xl);
+  line-height: var(--cv-lh-tight);
+  color: var(--cv-ink);
+  margin: 0;
+}
+.state-panel__text {
+  font-size: var(--cv-fs-md);
+  line-height: var(--cv-lh-body);
+  color: var(--cv-ink-muted);
+  margin: 0;
+}
+.state-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--cv-space-3);
+  margin-top: var(--cv-space-3);
+}
+.state-action {
+  min-height: var(--cv-touch-min);
+  min-width: var(--cv-touch-min);
+  --border-radius: var(--cv-radius-md);
+}
 
-  return (
-    <>
-      <IonRefresher
-        slot="fixed"
-        disabled={status === 'loading'}
-        onIonRefresh={handleRefresh}
-      >
-        <IonRefresherContent />
-      </IonRefresher>
+/* ---------- Foco visible sobre el elemento nativo (shadow DOM de Ionic) ---------- */
+.cultivos-list ion-item::part(native):focus-visible {
+  outline: 3px solid var(--cv-focus);
+  outline-offset: -3px;
+}
+.state-action::part(native):focus-visible {
+  outline: 3px solid var(--cv-focus);
+  outline-offset: 2px;
+}
 
-      <div className="cultivos-container">
-        {status === 'loading' && (
-          <div data-testid="state-loading" aria-label="Cargando cultivos">
-            <IonList className="cultivos-list">
-              {[1, 2, 3].map((n) => (
-                <IonItem key={n} className="cultivo-skeleton-item">
-                  <IonLabel>
-                    <h2><IonSkeletonText animated style={{ width: '60%' }} /></h2>
-                    <p><IonSkeletonText animated style={{ width: '40%' }} /></p>
-                    <p><IonSkeletonText animated style={{ width: '30%' }} /></p>
-                  </IonLabel>
-                </IonItem>
-              ))}
-            </IonList>
-          </div>
-        )}
-
-        {status === 'error' && (
-          <section
-            data-testid="state-error"
-            className="state-panel state-panel--error"
-            role="alert"
-          >
-            <IonIcon icon={warningOutline} className="state-panel__icon" aria-hidden="true" />
-            <h2 className="state-panel__title">No pudimos cargar tus cultivos</h2>
-            <p className="state-panel__text">
-              {errorMessage || 'Ocurrió un error inesperado al consultar la información. Por favor reintente.'}
-            </p>
-            {onRetry && (
-              <div className="state-panel__actions">
-                <button
-                  type="button"
-                  onClick={onRetry}
-                  className="state-action"
-                  data-testid="state-retry"
-                >
-                  Reintentar
-                </button>
-              </div>
-            )}
-          </section>
-        )}
-
-        {status === 'success' && listItems.length === 0 && (
-          <section data-testid="state-empty" className="state-panel state-panel--empty">
-            <IonIcon icon={nutritionOutline} className="state-panel__icon" aria-hidden="true" />
-            <h2 className="state-panel__title">No hay cultivos registrados</h2>
-            <p className="state-panel__text">Empieza registrando un nuevo cultivo para gestionarlo.</p>
-            <div className="state-panel__actions">
-              {onRefresh && (
-                <button
-                  type="button"
-                  onClick={() => onRefresh()}
-                  className="state-action"
-                >
-                  Actualizar
-                </button>
-              )}
-              {onCreate && (
-                <button
-                  type="button"
-                  onClick={onCreate}
-                  className="state-action"
-                >
-                  Registrar cultivo
-                </button>
-              )}
-            </div>
-          </section>
-        )}
-
-        {status === 'success' && listItems.length > 0 && (
-          <IonList
-            data-testid="state-data"
-            className="cultivos-list"
-            aria-label="Lista de cultivos"
-            role="list"
-          >
-            {listItems.map((item) => {
-              const badge = getBadgeConfig(item.estado);
-              return (
-                <IonItem
-                  key={item.id}
-                  button={!!onSelect}
-                  onClick={() => onSelect?.(item)}
-                  data-testid="cultivo-item"
-                  role="listitem"
-                >
-                  <IonLabel>
-                    <h2>{item.nombre}</h2>
-                    <p>{item.variedad} · Lote {item.lote} · {item.areaHectareas} ha</p>
-                    <p className="cultivo-meta">Sembrado el {formatDate(item.fechaSiembra)}</p>
-                  </IonLabel>
-                  <IonBadge className={`estado-badge ${badge.class}`}>
-                    <IonIcon icon={badge.icon} aria-hidden="true" />
-                    {badge.label}
-                  </IonBadge>
-                </IonItem>
-              );
-            })}
-          </IonList>
-        )}
-      </div>
-    </>
-  );
-};
-
-export default CultivosList;
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .cultivos-list ion-item,
+  .state-action {
+    transition: none;
+  }
+}
