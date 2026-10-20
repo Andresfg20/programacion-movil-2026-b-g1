@@ -1,0 +1,194 @@
+import React from 'react';
+import {
+  IonList,
+  IonItem,
+  IonLabel,
+  IonBadge,
+  IonIcon,
+  IonSkeletonText,
+  IonButton,
+  IonRefresher,
+  IonRefresherContent,
+} from '@ionic/react';
+import {
+  checkmarkCircleOutline,
+  warningOutline,
+  nutritionOutline,
+  refreshOutline,
+  addCircleOutline,
+} from 'ionicons/icons';
+import { Cultivo, EstadoSalud } from '../types/cultivo';
+import './CultivosList.css';
+
+export interface CultivosListProps {
+  status: 'loading' | 'success' | 'error';
+  data?: Cultivo[];
+  items?: Cultivo[];
+  errorMessage?: string;
+  onRefresh?: () => Promise<void> | void;
+  onRetry?: () => void;
+  onSelect?: (cultivo: Cultivo) => void;
+  onCreate?: () => void;
+}
+
+const getBadgeConfig = (estado: EstadoSalud) => {
+  switch (estado) {
+    case 'sano':
+      return { class: 'estado-badge--sano', label: 'Sano', icon: checkmarkCircleOutline };
+    case 'atencion':
+      return { class: 'estado-badge--atencion', label: 'Requiere atención', icon: warningOutline };
+    case 'cosecha':
+      return { class: 'estado-badge--cosecha', label: 'Listo para cosechar', icon: nutritionOutline };
+  }
+};
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-CO', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
+export const CultivosList: React.FC<CultivosListProps> = ({
+  status,
+  data,
+  items: itemsProp,
+  errorMessage,
+  onRefresh,
+  onRetry,
+  onSelect,
+  onCreate,
+}) => {
+  const listItems = data ?? itemsProp ?? [];
+
+  const handleRefresh = async (event: CustomEvent) => {
+    if (onRefresh) {
+      try {
+        await onRefresh();
+      } catch (e) {
+        // Ignorar error para permitir la finalización del refresher
+      }
+    }
+    event.detail.complete();
+  };
+
+  return (
+    <>
+      <IonRefresher
+        slot="fixed"
+        disabled={status === 'loading'}
+        onIonRefresh={handleRefresh}
+      >
+        <IonRefresherContent />
+      </IonRefresher>
+
+      <div className="cultivos-container">
+        {status === 'loading' && (
+          <div data-testid="state-loading" aria-label="Cargando cultivos">
+            <IonList className="cultivos-list">
+              {[1, 2, 3].map((n) => (
+                <IonItem key={n} className="cultivo-skeleton-item">
+                  <IonLabel>
+                    <h2><IonSkeletonText animated style={{ width: '60%' }} /></h2>
+                    <p><IonSkeletonText animated style={{ width: '40%' }} /></p>
+                    <p><IonSkeletonText animated style={{ width: '30%' }} /></p>
+                  </IonLabel>
+                </IonItem>
+              ))}
+            </IonList>
+          </div>
+        )}
+
+        {status === 'error' && (
+          <section
+            data-testid="state-error"
+            className="state-panel state-panel--error"
+            role="alert"
+          >
+            <IonIcon icon={warningOutline} className="state-panel__icon" aria-hidden="true" />
+            <h2 className="state-panel__title">No pudimos cargar tus cultivos</h2>
+            <p className="state-panel__text">
+              {errorMessage || 'Ocurrió un error inesperado al consultar la información. Por favor reintente.'}
+            </p>
+            {onRetry && (
+              <div className="state-panel__actions">
+                <button
+                  type="button"
+                  onClick={onRetry}
+                  className="state-action"
+                  data-testid="state-retry"
+                >
+                  Reintentar
+                </button>
+              </div>
+            )}
+          </section>
+        )}
+
+        {status === 'success' && listItems.length === 0 && (
+          <section data-testid="state-empty" className="state-panel state-panel--empty">
+            <IonIcon icon={nutritionOutline} className="state-panel__icon" aria-hidden="true" />
+            <h2 className="state-panel__title">No hay cultivos registrados</h2>
+            <p className="state-panel__text">Empieza registrando un nuevo cultivo para gestionarlo.</p>
+            <div className="state-panel__actions">
+              {onRefresh && (
+                <button
+                  type="button"
+                  onClick={() => onRefresh()}
+                  className="state-action"
+                >
+                  Actualizar
+                </button>
+              )}
+              {onCreate && (
+                <button
+                  type="button"
+                  onClick={onCreate}
+                  className="state-action"
+                >
+                  Registrar cultivo
+                </button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {status === 'success' && listItems.length > 0 && (
+          <IonList
+            data-testid="state-data"
+            className="cultivos-list"
+            aria-label="Lista de cultivos"
+            role="list"
+          >
+            {listItems.map((item) => {
+              const badge = getBadgeConfig(item.estado);
+              return (
+                <IonItem
+                  key={item.id}
+                  button={!!onSelect}
+                  onClick={() => onSelect?.(item)}
+                  data-testid="cultivo-item"
+                  role="listitem"
+                >
+                  <IonLabel>
+                    <h2>{item.nombre}</h2>
+                    <p>{item.variedad} · Lote {item.lote} · {item.areaHectareas} ha</p>
+                    <p className="cultivo-meta">Sembrado el {formatDate(item.fechaSiembra)}</p>
+                  </IonLabel>
+                  <IonBadge className={`estado-badge ${badge.class}`}>
+                    <IonIcon icon={badge.icon} aria-hidden="true" />
+                    {badge.label}
+                  </IonBadge>
+                </IonItem>
+              );
+            })}
+          </IonList>
+        )}
+      </div>
+    </>
+  );
+};
+
+export default CultivosList;

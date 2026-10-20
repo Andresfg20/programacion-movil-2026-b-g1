@@ -1,0 +1,104 @@
+/* ==========================================================================
+   Design tokens — Cultivos (Semana 11)
+   Contrastes verificados en docs/02-design-tokens.md
+   ========================================================================== */
+:root {
+  /* Color: base */
+  --cv-ink: #16231b;
+  --cv-ink-muted: #4b5a50;
+  --cv-surface: #f3f5f1;
+  --cv-surface-raised: #ffffff;
+  --cv-divider: #d5ddd7; /* decorativo: no comunica información por sí solo */
+
+  /* Color: marca y semánticos */
+  --cv-primary: #2c5e3b;
+  --cv-on-primary: #ffffff;
+  --cv-earth: #8a3f0f;
+  --cv-danger: #a12727;
+  --cv-focus: #1b5fc4;
+
+  /* Color: estados del cultivo (fondo + texto) */
+  --cv-estado-sano-bg: #dcebdd;
+  --cv-estado-sano-fg: #1e4a2b;
+  --cv-estado-atencion-bg: #fbe3cf;
+  --cv-estado-atencion-fg: #6b2f08;
+  --cv-estado-cosecha-bg: #f6e7a8;
+  --cv-estado-cosecha-fg: #4a3b00;
+
+  /* Tipografía */
+  --cv-font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --cv-font-body: 'Source Sans 3 Variable', 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --cv-fs-xs: 0.75rem;   /* 12px */
+  --cv-fs-sm: 0.875rem;  /* 14px */
+  --cv-fs-md: 1rem;      /* 16px */
+  --cv-fs-lg: 1.25rem;   /* 20px */
+  --cv-fs-xl: 1.5rem;    /* 24px */
+  --cv-fs-2xl: 1.875rem; /* 30px */
+  --cv-lh-tight: 1.25;
+  --cv-lh-body: 1.5;
+
+  /* Espaciado (escala de 4px) */
+  --cv-space-1: 0.25rem;
+  --cv-space-2: 0.5rem;
+  --cv-space-3: 0.75rem;
+  --cv-space-4: 1rem;
+  --cv-space-5: 1.5rem;
+  --cv-space-6: 2rem;
+  --cv-space-7: 3rem;
+
+  /* Forma y ergonomía */
+  --cv-radius-sm: 8px;
+  --cv-radius-md: 12px;
+  --cv-radius-pill: 999px;
+  --cv-touch-min: 44px;
+
+  /* Mapeo a variables de Ionic */
+  --ion-font-family: var(--cv-font-body);
+  --ion-background-color: var(--cv-surface);
+  --ion-text-color: var(--cv-ink);
+  --ion-color-primary: var(--cv-primary);
+  --ion-color-primary-contrast: var(--cv-on-primary);
+  --ion-color-danger: var(--cv-danger);
+  --ion-item-background: var(--cv-surface-raised);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cv-ink: #e8eee9;
+    --cv-ink-muted: #a9b7ad;
+    --cv-surface: #16231b;
+    --cv-surface-raised: #1f2f25;
+    --cv-divider: #2e4034;
+
+    --cv-primary: #9fd0ae;
+    --cv-on-primary: #16231b;
+    --cv-earth: #f0a97a;
+    --cv-danger: #ff9a94;
+    --cv-focus: #8fb8ff;
+
+    --cv-estado-sano-bg: #2c5e3b;
+    --cv-estado-sano-fg: #ffffff;
+    --cv-estado-atencion-bg: #6b2f08;
+    --cv-estado-atencion-fg: #fbe3cf;
+    --cv-estado-cosecha-bg: #4a3b00;
+    --cv-estado-cosecha-fg: #f6e7a8;
+  }
+}
+
+/* Foco visible global (WCAG 2.4.7) */
+:where(ion-item, ion-button, button, a):focus-visible {
+  outline: 3px solid var(--cv-focus);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
