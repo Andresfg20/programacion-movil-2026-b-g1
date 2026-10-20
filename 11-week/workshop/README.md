@@ -22,20 +22,6 @@ TESTING:      Vitest 5 + React Testing Library (jsdom)
 Taller de la Semana 11 aplicado al módulo **Cultivos** de la app móvil (Ionic React + TypeScript).
 Cubre los checkpoints **CP0 a CP5**: auditoría UX, design tokens, estados de pantalla, accesibilidad/responsive y pruebas.
 
----
-
-## Reflexión del Taller
-
-Durante el desarrollo de este taller para el módulo de **Cultivos**, me enfoqué en mejorar la experiencia de usuario (UX) y organizar la interfaz para que fuera intuitiva y responsiva.
-
-### Aspectos clave trabajados:
-* **Diseño y Estilos:** Se implementaron los *design tokens* para mantener la consistencia visual y se corrigieron detalles en la compilación del CSS.
-* **Estados de Pantalla y Accesibilidad:** Se estructuraron los estados de carga, error y vista principal, asegurando una buena adaptabilidad a distintos tamaños de pantalla.
-* **Pruebas y Documentación:** Se agregaron pruebas unitarias para el hook `useCultivos` con Vitest para validar el manejo de datos y errores, y se completó la auditoría UX en la carpeta `docs` cubriendo los checkpoints de CP0 a CP5.
-
-El principal reto fue ajustar la configuración del *build* del CSS y la integración de los hooks, pero se logró resolver dejando una arquitectura limpia y alineada con las buenas prácticas de Ionic y React.
-
----
 
 ## CONFIG
 
