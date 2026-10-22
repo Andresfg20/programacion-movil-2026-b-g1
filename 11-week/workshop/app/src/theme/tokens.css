@@ -16,6 +16,8 @@
   --cv-earth: #8a3f0f;
   --cv-danger: #a12727;
   --cv-focus: #1b5fc4;
+  --cv-color-error: var(--cv-danger);
+  --cv-color-success: var(--cv-primary);
 
   /* Color: estados del cultivo (fondo + texto) */
   --cv-estado-sano-bg: #dcebdd;

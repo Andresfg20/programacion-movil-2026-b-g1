@@ -1,0 +1,124 @@
+.cultivo-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cv-space-4);
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--cv-space-4);
+}
+
+.cultivo-form__title {
+  margin: 0;
+  font-family: var(--cv-font-display);
+  font-size: var(--cv-fs-xl);
+  line-height: var(--cv-lh-tight);
+  color: var(--cv-ink);
+}
+
+.cultivo-form__legend {
+  margin: calc(var(--cv-space-2) * -1) 0 0;
+  font-size: var(--cv-fs-sm);
+  line-height: var(--cv-lh-body);
+  color: var(--cv-ink-muted);
+}
+
+.cultivo-form__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--cv-space-4);
+}
+
+.cultivo-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cv-space-2);
+  min-width: 0;
+}
+
+.cultivo-form__item {
+  --min-height: 56px;
+  --padding-start: var(--cv-space-4);
+  --inner-padding-end: var(--cv-space-3);
+  --background: var(--cv-surface-raised);
+  border: 1px solid var(--cv-divider);
+  border-radius: var(--cv-radius-md);
+  overflow: hidden;
+}
+
+.cultivo-form__item:focus-within {
+  outline: 3px solid var(--cv-focus);
+  outline-offset: 2px;
+}
+
+.cultivo-form__item--invalid {
+  border-color: var(--cv-color-error, var(--cv-danger));
+  box-shadow: inset 0 0 0 1px var(--cv-color-error, var(--cv-danger));
+}
+
+.cultivo-form__error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cv-space-2);
+  margin: 0;
+  font-size: var(--cv-fs-sm);
+  font-weight: 600;
+  line-height: var(--cv-lh-body);
+  color: var(--cv-color-error, var(--cv-danger));
+}
+
+.cultivo-form__error ion-icon {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  font-size: var(--cv-fs-md);
+}
+
+.cultivo-form__hint {
+  margin: 0;
+  font-size: var(--cv-fs-sm);
+  line-height: var(--cv-lh-body);
+  color: var(--cv-ink-muted);
+}
+
+.cultivo-form__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cv-space-3);
+  margin-top: var(--cv-space-2);
+}
+
+.cultivo-form__button {
+  min-height: var(--cv-touch-min);
+  min-width: var(--cv-touch-min);
+  margin: 0;
+  --border-radius: var(--cv-radius-md);
+}
+
+.cultivo-form__button::part(native):focus-visible {
+  outline: 3px solid var(--cv-focus);
+  outline-offset: 2px;
+}
+
+ion-toast.cultivo-toast-success {
+  --background: var(--cv-color-success, var(--cv-primary));
+  --color: var(--cv-on-primary);
+  --button-color: var(--cv-on-primary);
+}
+
+@media (min-width: 768px) {
+  .cultivo-form {
+    padding: var(--cv-space-5);
+  }
+
+  .cultivo-form__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cultivo-form__actions {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+  }
+
+  .cultivo-form__button {
+    min-width: 160px;
+  }
+}
